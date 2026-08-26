@@ -261,7 +261,7 @@ void Solution::OrOpt3(const int i, const int j, const Subsequence& miolo){
 
 Solution Solution::ILS(int maxIter, int maxIterIls){
     Solution bestOfAll;
-    bestOfAll.cost = std::numeric_limits<double>::max();
+    bestOfAll.cost = INFINITY;
 
     for (int i = 0; i < maxIter; i++) {
         Solution s = Construcao();  
