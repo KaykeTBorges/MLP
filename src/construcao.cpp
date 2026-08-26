@@ -59,14 +59,14 @@ Solution Construcao(){
         ordenarEmOrdemCrescente(custoInsercao);
 
         // Sorteia o alpha seguindo a base da literatura (R = {0.00, 0.01, ..., 0.25})
-        double alpha = (rand() % 26) / 100.0;
+        double alpha = Random::getInt(0, 25) / 100.0;
 
         // ceil(alpha * tamanho)
         // O std::max entra aqui para impedir que o limite seja 0.
         int limite = std::max(1, (int)ceil(alpha * custoInsercao.size()));
 
         // Sorteia o candidato dentro do limite
-        int selecionado = rand() % limite;
+        int selecionado = Random::getInt(0, limite - 1);
 
         inserirNaSolucao(s, custoInsercao[selecionado]);
         
@@ -74,8 +74,8 @@ Solution Construcao(){
         int noInserido = custoInsercao[selecionado].noInserido;
         CL.erase(std::remove(CL.begin(), CL.end(), noInserido), CL.end());
     }
-    UpdateAllSubseq(&s);
-    s.cost = s.subseq_matrix[0][Data::getInstance().n].C;
+    s.UpdateLinear();
+    s.cost = s.prefix[Data::getInstance().n].C;
     return s;
 }
 

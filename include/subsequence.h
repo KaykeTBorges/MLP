@@ -9,7 +9,7 @@ struct Subsequence {
     int W; // numero de clientes
     int first, last;
 
-    inline static Subsequence Concatenate(Subsequence &sigma_1, Subsequence &sigma_2) {
+    inline static Subsequence Concatenate(const Subsequence &sigma_1, const Subsequence &sigma_2) {
         Data & data = Data::getInstance();
         Subsequence sigma;
         double ligacao = data.matrizAdj[sigma_1.last][sigma_2.first]; // aqui acontece a ligação entre subsequencia, o final de uma começo de outra

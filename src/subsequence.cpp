@@ -124,6 +124,8 @@ void Solution::UpdateSubseqIJ(const int i, const int j){
 
     }
 
+    // aqui é usado menor igual porque se não impediria a atualização dos extremos
+    // por considerar a volta ao ultimo nó, ele precisa ser incluido no cálculo
     for(int a = 0; a <= j; a++){
         for(int b = a + 1; b <= data.n; b++){
 
@@ -151,3 +153,61 @@ void Solution::UpdateSubseqIJ(const int i, const int j){
         }
     }
 }
+
+void Solution::UpdateLinear(){
+    Data & data = data.getInstance();
+
+    // cria um vetor com subsequencias isoladas, de tamanho W de nós
+    std::vector<Subsequence> seq(data.n + 1);
+
+    for(int i = 0; i <= data.n; i++){
+        seq[i].W = (i > 0) ? 1 : 0; // operador ternário, só para definir o 0 como 0 de tamanho
+        seq[i].C = 0.0;
+        seq[i].T = 0.0;
+        seq[i].first = route[i];
+        seq[i].last = route[i];
+    }
+
+    prefix[0] = seq[0];
+    for(int i = 1; i <= data.n; i++){
+        prefix[i] = Subsequence::Concatenate(prefix[i-1], seq[i]);
+    }
+
+    sufix[data.n] = seq[data.n];
+    for(int i = data.n - 1; i >= 0; i--){
+        sufix[i] = Subsequence::Concatenate(seq[i], sufix[i+1]);
+    }
+
+}   
+
+void Solution::UpdateLinearIJ(const int i, const int j){
+    Data & data = data.getInstance();
+
+    // cria um vetor com subsequencias isoladas, de tamanho W de nós
+    std::vector<Subsequence> seq(data.n + 1);
+
+    for(int a = 0; a <= data.n; a++){
+        seq[a].W = (a > 0) ? 1 : 0; // operador ternário, só para definir o 0 como 0 de tamanho
+        seq[a].C = 0.0;
+        seq[a].T = 0.0;
+        seq[a].first = route[a];
+        seq[a].last = route[a];
+    }
+
+    int min_idx = std::min(i, j);
+    min_idx = std::max(1, min_idx);
+
+    int max_idx = std::max(i, j);
+    max_idx = std::min(max_idx, data.n-1);
+
+    prefix[0] = seq[0];
+    for(int a = min_idx; a <= data.n; a++){
+        prefix[a] = Subsequence::Concatenate(prefix[a-1], seq[a]);
+    }
+
+    sufix[data.n] = seq[data.n];
+    for(int a = max_idx; a >= 0; a--){
+        sufix[a] = Subsequence::Concatenate(seq[a], sufix[a+1]);
+    }
+
+}   

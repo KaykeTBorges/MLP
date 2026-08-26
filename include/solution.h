@@ -17,14 +17,14 @@ struct Solution
     double cost;
     std::vector<std::vector<Subsequence>> subseq_matrix;
 
-    double* prefix;
-    double* sufix;
+    std::vector<Subsequence> prefix;
+    std::vector<Subsequence> sufix;
 
     
     Solution(std::vector<int> route, double cost): route(route), cost(cost), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)) {}
-    Solution() :  route(std::vector<int>(Data::getInstance().n + 1)), cost(0), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)) {}
-    Solution(const Solution &s) : route(s.route), cost(s.cost), subseq_matrix(s.subseq_matrix) {}
-    Solution(int lixo) : route(), cost(0), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)) { route.reserve(Data::getInstance().n + 1); }
+    Solution() :  route(std::vector<int>(Data::getInstance().n + 1)), cost(0), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)), prefix(Data::getInstance().n + 1), sufix(Data::getInstance().n + 1) {}
+    Solution(const Solution &s) : route(s.route), cost(s.cost), subseq_matrix(s.subseq_matrix), prefix(s.prefix), sufix(s.sufix) {}
+    Solution(int lixo) : route(), cost(0), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)), prefix(Data::getInstance().n + 1), sufix(Data::getInstance().n + 1) { route.reserve(Data::getInstance().n + 1); }
 
     void buildTrivial();
 
@@ -35,17 +35,18 @@ struct Solution
     double evaluateSwap2(const int i, const int j);
     void swap2(const int i, const int j);
 
-    double evaluateSwap(const int i, const int j);
-    double evaluateOrOpt2(const int i, const int j);
-    double evaluateReinsertion(const int i, const int j);
-    double evaluateOpt2(const int i, const int j);
-    double evaluateOrOpt3(const int i, const int j);
+    double evaluateSwap(const int i, const int j, const Subsequence& miolo);
+    double evaluateOpt2(const int i, const int j, const Subsequence& miolo);
+    double evaluateOrOpt2(const int i, const int j, const Subsequence& miolo);
+    double evaluateReinsertion(const int i, const int j, const Subsequence& miolo);
 
-    void swap(const int i, const int j);
-    void OrOpt2(const int i, const int j);
-    void Reinsertion(const int i, const int j);
-    void Opt2(const int i, const int j);
-    void OrOpt3(const int i, const int j);
+    double evaluateOrOpt3(const int i, const int j, const Subsequence& miolo);
+
+    void swap(const int i, const int j, const Subsequence& miolo);
+    void Opt2(const int i, const int j, const Subsequence& miolo);
+    void OrOpt2(const int i, const int j, const Subsequence& miolo);
+    void Reinsertion(const int i, const int j, const Subsequence& miolo);
+    void OrOpt3(const int i, const int j, const Subsequence& miolo);
 
     double evaluateOrOptGeral(const int i, const int j, const int k);
 
@@ -55,6 +56,8 @@ struct Solution
     void UpdateSubseqSwap(const int i, const int j);
     void UpdateSubseq2Opt(const int i, const int j);
     void UpdateSubseqIJ(const int i, const int j);
+    void UpdateLinear();
+    void UpdateLinearIJ(const int i, const int j);
 
     Solution ILS(int maxIter, int maxIterIls);
 };

@@ -11,7 +11,7 @@ void Solution::print(){
     }
     std::cout << route[Data::getInstance().n] << std::endl;
     std::cout << "Latência Total (MLP Cost): " << cost << std::endl;
-    std::cout << "Distância Percorrida: " << subseq_matrix[0][Data::getInstance().n].T << std::endl;
+    std::cout << "Distância Percorrida: " << prefix[Data::getInstance().n].T << std::endl;
 }
 
 void Solution::copy(const Solution &other){
@@ -30,48 +30,58 @@ void Solution::buildTrivial(){
     }
     route[data.n] = 1;
 
-    // popula a subseq_matrix para que print() e as funções de avaliação funcionem
-    UpdateAllSubseq(this);
-
-    // custo MLP (latência acumulada) derivado diretamente da matriz
-    cost = subseq_matrix[0][data.n].C;
+    UpdateLinear();
+    cost = prefix[data.n].C;
 }
 
 
-double Solution::evaluateSwap(const int i, const int j){
+double Solution::evaluateSwap(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
-    Subsequence final;
+    Subsequence no_i;
+    no_i.W = 1; no_i.T = 0.0; no_i.C = 0.0;
+    no_i.first = route[i]; no_i.last = route[i];
 
-    if(j == i+1){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
 
-        Subsequence bloco2 = subseq_matrix[j][j];
-        Subsequence bloco3 = subseq_matrix[i][i];
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
 
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-
+    if(j > i+1){
+        // aqui tem um miolo a ser "somado" nessa concatenação
+        final = Subsequence::Concatenate(final, miolo);
     }
-    else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        // aqui é já com as posições mudadas
-        Subsequence bloco2 = subseq_matrix[j][j];
+    // senão não tem nenhum miolo, o j se encontra logo depois do i
+    // ai eu posso manter sem else, porque já é o normal
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
+        
+    double delta = final.C - this->cost;
 
-        Subsequence bloco3 = subseq_matrix[i+1][j-1];
+    return delta;
 
-        Subsequence bloco4 = subseq_matrix[i][i];
+}
 
-        Subsequence bloco5 = subseq_matrix[j+1][data.n];
+double Solution::evaluateOpt2(const int i, const int j, const Subsequence& miolo){
+    Data & data = Data::getInstance();
+    Subsequence no_i;
+    no_i.W = 1; no_i.T = 0.0; no_i.C = 0.0;
+    no_i.first = route[i]; no_i.last = route[i];
 
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-        final = Subsequence::Concatenate(final, bloco5);
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
 
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
+
+    if(j > i + 1){
+        final = Subsequence::Concatenate(final, miolo);
     }
+
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
 
     double delta = final.C - this->cost;
 
@@ -80,118 +90,108 @@ double Solution::evaluateSwap(const int i, const int j){
 }
 
 
-double Solution::evaluateOrOpt2(const int i, const int j){
+double Solution::evaluateOrOpt2(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
+    Subsequence node_a;
+    node_a.W = (i > 0) ? 1 : 0; 
+    node_a.T = 0.0; 
+    node_a.C = 0.0;
+    node_a.first = route[i]; 
+    node_a.last = route[i];
+    Subsequence node_b;
+    node_b.W = 1; 
+    node_b.T = 0.0; 
+    node_b.C = 0.0;
+    node_b.first = route[i+1]; 
+    node_b.last = route[i+1];
 
-    Subsequence final;
+    Subsequence no_i = Subsequence::Concatenate(node_a, node_b);
+
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
+
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
 
     // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
-    if(j == i+2){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[j][j];
-        Subsequence bloco3 = subseq_matrix[i][i+1];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
+    if(j > i+2){
+        final = Subsequence::Concatenate(final, miolo);
 
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-
-    }else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[i+2][j];
-        Subsequence bloco3 = subseq_matrix[i][i+1];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-
-
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-        }
-
-        double delta = final.C - this->cost;
-
-        return delta;
-}
-
-double Solution::evaluateReinsertion(const int i, const int j){
-    Data & data = Data::getInstance();
-
-    Subsequence final;
-
-    if(j == i+1){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[j][j];
-        Subsequence bloco3 = subseq_matrix[i][i];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-
-        final = Subsequence::Concatenate(bloco1, bloco2);   
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-    }else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[i+1][j];
-        Subsequence bloco3 = subseq_matrix[i][i];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-    
-        final = Subsequence::Concatenate(bloco1, bloco2);   
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
     }
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
+
     double delta = final.C - this->cost;
 
     return delta;
 }
 
-double Solution::evaluateOpt2(const int i, const int j){
+double Solution::evaluateReinsertion(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
+    Subsequence no_i;
+    no_i.W = 1; no_i.T = 0.0; no_i.C = 0.0;
+    no_i.first = route[i]; no_i.last = route[i];
 
-    Subsequence final;
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
 
-    Subsequence bloco1 = subseq_matrix[0][i-1];
-    // aqui dá certo porque a função updateALL faz o calculo do reverso
-    // ai eu tenho definido, se fosse o básico normal, eu nunca teria essa informação
-    // porque vai de i -> j
-    Subsequence bloco2 = subseq_matrix[j][i];
-    Subsequence bloco3 = subseq_matrix[j+1][data.n];
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
 
-    final = Subsequence::Concatenate(bloco1, bloco2);
-    final = Subsequence::Concatenate(final, bloco3);
+    if(j > i+1){
+        final = Subsequence::Concatenate(final, miolo);
+    }
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
 
     double delta = final.C - this->cost;
 
     return delta;
-
 }
 
-double Solution::evaluateOrOpt3(const int i, const int j){
-    Data & data = Data::getInstance();
-    
-    Subsequence final;
-    
-    if(j == i+3){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[j][j];
-        Subsequence bloco3 = subseq_matrix[i][i+2];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
 
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
+double Solution::evaluateOrOpt3(const int i, const int j, const Subsequence& miolo){
+        Data & data = Data::getInstance();
+    Subsequence node_a;
+    node_a.W = (i > 0) ? 1 : 0; 
+    node_a.T = 0.0; 
+    node_a.C = 0.0;
+    node_a.first = route[i]; 
+    node_a.last = route[i];
+    Subsequence node_b;
+    node_b.W = 1; 
+    node_b.T = 0.0; 
+    node_b.C = 0.0;
+    node_b.first = route[i+1]; 
+    node_b.last = route[i+1];
+    Subsequence node_c;
+    node_c.W = 1; 
+    node_c.T = 0.0; 
+    node_c.C = 0.0;
+    node_c.first = route[i+2]; 
+    node_c.last = route[i+2];
 
-    }else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[i+3][j];
-        Subsequence bloco3 = subseq_matrix[i][i+2];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
+    Subsequence no_i = Subsequence::Concatenate(node_a, node_b);
+    no_i = Subsequence::Concatenate(no_i, node_c);
 
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
 
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-        }
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
 
-        double delta = final.C - this->cost;
+    // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
+    if(j > i+3){
+        final = Subsequence::Concatenate(final, miolo);
 
+    }
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
+
+    double delta = final.C - this->cost;
 
     return delta;
 }
@@ -207,55 +207,55 @@ double Solution::evaluateOrOpt3(const int i, const int j){
 //     }
 // }
 
-void Solution::swap(const int i, const int j){
+void Solution::swap(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
     // aqui eu poderia atribuir direto, mas para manter o mais igual eu fiz o valor final - o custo atual
     // porque após concatenar eu já descubro o valor final direto
-    cost += evaluateSwap(i, j);  
+    cost += evaluateSwap(i, j, miolo);  
 
     int aux = route[i];
     route[i] = route[j];
     route[j] = aux;
-    UpdateSubseqIJ(i, j);
+    UpdateLinearIJ(i, j);
     
 }
 
-
-void Solution::OrOpt2(const int i, const int j){
+void Solution::Opt2(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
-    cost += evaluateOrOpt2(i, j);
+    cost += evaluateOpt2(i, j, miolo);
+
+    // fim exclusivo
+    std::reverse(route.begin() + i, route.begin() + (j + 1));
+    UpdateLinearIJ(i, j);
+}
+
+
+void Solution::OrOpt2(const int i, const int j, const Subsequence& miolo){
+    Data & data = Data::getInstance();
+    cost += evaluateOrOpt2(i, j, miolo);
 
     // o primeiro valor é onde o bloco começa (i)
     // o segundo valor é o valor de proximo dele (i+2, porque queremos o bloco)
     // o terceiro valor é logo após o destino final (j+1)
     std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
-    UpdateSubseqIJ(i, j+1);
+    UpdateLinearIJ(i, j+1);
 }
 
-void Solution::Reinsertion(const int i, const int j){
+void Solution::Reinsertion(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
-    cost += evaluateReinsertion(i, j);
+    cost += evaluateReinsertion(i, j, miolo);
 
     std::rotate(route.begin() + i, route.begin() + (i+1), route.begin() + (j+1));
-    UpdateSubseqIJ(i, j);
+    UpdateLinearIJ(i, j);
 
 }
 
-void Solution::Opt2(const int i, const int j){
+void Solution::OrOpt3(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
-    cost += evaluateOpt2(i, j);
-
-    // fim exclusivo
-    std::reverse(route.begin() + i, route.begin() + (j + 1));
-    UpdateSubseqIJ(i, j);
-}
-
-void Solution::OrOpt3(const int i, const int j){
-    Data & data = Data::getInstance();
-    cost += evaluateOrOpt3(i, j);
+    cost += evaluateOrOpt3(i, j, miolo);
 
     std::rotate(route.begin() + i, route.begin() + (i+3), route.begin() + (j+1));
-    UpdateSubseqIJ(i, j+2);
+    UpdateLinearIJ(i, j+2);
 
 }
 

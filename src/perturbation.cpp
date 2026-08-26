@@ -242,34 +242,6 @@ void Solution::pertubationDoubleBridgeTamanho(){
 
     std::vector<int> novaRoute;
     novaRoute.reserve(data.n);
-
-    Subsequence final;
-
-    if(k == j + 1){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[k][l];
-        Subsequence bloco3 = subseq_matrix[i][j];
-        Subsequence bloco4 = subseq_matrix[l+1][data.n];
-
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-
-    }else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[k][l];
-        Subsequence bloco3 = subseq_matrix[j+1][k-1];
-        Subsequence bloco4 = subseq_matrix[i][j];
-        Subsequence bloco5 = subseq_matrix[l+1][data.n];
-
-        final = Subsequence::Concatenate(bloco1, bloco2);
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-        final = Subsequence::Concatenate(final, bloco5);
-    }
-
-    cost = final.C;
-
     novaRoute.insert(novaRoute.end(), route.begin(), route.begin() + i);
     novaRoute.insert(novaRoute.end(), route.begin() + k, route.begin() + l+1);
     novaRoute.insert(novaRoute.end(), route.begin() + j+1, route.begin() + k);
@@ -277,8 +249,8 @@ void Solution::pertubationDoubleBridgeTamanho(){
     novaRoute.insert(novaRoute.end(), route.begin() + l+1, route.end());
 
     route = std::move(novaRoute);
-    // recalcula toda a subseq_matrix pois a rota foi reorganizada
-    UpdateAllSubseq(this);
+    UpdateLinear();
+    cost = prefix[data.n].C;
 }
 
 void Solution::pertubationNTamanho(const int qtdCortes){
@@ -412,8 +384,7 @@ void Solution::pertubationNTamanho(const int qtdCortes){
     novaRoute.push_back(route[data.n]);
     // novaRoute tamanho = data.n + 1
 
-    int delta = a_somar - a_subtrair;
-    cost += delta;
-
     route = std::move(novaRoute);
+    UpdateLinear();
+    cost = prefix[data.n].C;
 }
