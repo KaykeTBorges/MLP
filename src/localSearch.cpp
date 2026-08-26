@@ -68,18 +68,15 @@ bool bestImprovementSwap(Solution &s){
     return improved;
 }
 
-bool bestImprovmentOrOpt2(Solution &s){
+bool bestImprovmentOpt2(Solution &s){
     Data & data = Data::getInstance();
     double delta, bestDelta = 0.0;
     int bestI, bestJ, i, j;
     bool improved = false;
 
-    // aqui o for do (i) precisa começar no 1, porque não pode mexer no inicial
-    // e precisa ir até o n-2 porque não pode chegar no n-1 porque se não trocaria o final, que não pode
-    for (i = 1; i < data.n - 2; i++){
-        // o (j) tem que começar no i+2 porque ele não pode entrar dentro do bloco que vai ser transferido
-        for(j = i + 2; j < data.n; j++){
-            delta = s.evaluateOrOpt2(i, j);
+    for (i = 1; i < data.n - 1; i++){
+        for(j = i + 1; j < data.n; j++){
+            delta = s.evaluateOpt2(i, j);
             if(delta < bestDelta){
                 bestDelta = delta;
                 bestI = i;
@@ -89,7 +86,7 @@ bool bestImprovmentOrOpt2(Solution &s){
         }
     }
     if(improved){
-        s.OrOpt2(bestI, bestJ);
+        s.Opt2(bestI, bestJ);
     }
 
     return improved;
@@ -119,6 +116,33 @@ bool bestImprovmentReinsertion(Solution &s){
     return improved;
 }
 
+bool bestImprovmentOrOpt2(Solution &s){
+    Data & data = Data::getInstance();
+    double delta, bestDelta = 0.0;
+    int bestI, bestJ, i, j;
+    bool improved = false;
+
+    // aqui o for do (i) precisa começar no 1, porque não pode mexer no inicial
+    // e precisa ir até o n-2 porque não pode chegar no n-1 porque se não trocaria o final, que não pode
+    for (i = 1; i < data.n - 2; i++){
+        // o (j) tem que começar no i+2 porque ele não pode entrar dentro do bloco que vai ser transferido
+        for(j = i + 2; j < data.n; j++){
+            delta = s.evaluateOrOpt2(i, j);
+            if(delta < bestDelta){
+                bestDelta = delta;
+                bestI = i;
+                bestJ = j;
+                improved = true;
+            }
+        }
+    }
+    if(improved){
+        s.OrOpt2(bestI, bestJ);
+    }
+
+    return improved;
+}
+
 bool bestImprovmentOrOpt3(Solution &s){
     Data & data = Data::getInstance();
     double delta, bestDelta = 0.0;
@@ -141,30 +165,6 @@ bool bestImprovmentOrOpt3(Solution &s){
     }
     if(improved){
         s.OrOpt3(bestI, bestJ);
-    }
-
-    return improved;
-}
-
-bool bestImprovmentOpt2(Solution &s){
-    Data & data = Data::getInstance();
-    double delta, bestDelta = 0.0;
-    int bestI, bestJ, i, j;
-    bool improved = false;
-
-    for (i = 1; i < data.n - 1; i++){
-        for(j = i + 1; j < data.n; j++){
-            delta = s.evaluateOpt2(i, j);
-            if(delta < bestDelta){
-                bestDelta = delta;
-                bestI = i;
-                bestJ = j;
-                improved = true;
-            }
-        }
-    }
-    if(improved){
-        s.Opt2(bestI, bestJ);
     }
 
     return improved;

@@ -36,15 +36,15 @@ struct Solution
     void swap2(const int i, const int j);
 
     double evaluateSwap(const int i, const int j);
-    double evaluateOrOpt2(const int i, const int j);
+    double evaluateOpt2(const int i, const int j); 
     double evaluateReinsertion(const int i, const int j);
-    double evaluateOpt2(const int i, const int j);
+    double evaluateOrOpt2(const int i, const int j);
     double evaluateOrOpt3(const int i, const int j);
 
     void swap(const int i, const int j);
-    void OrOpt2(const int i, const int j);
+    void Opt2(const int i, const int j);   
     void Reinsertion(const int i, const int j);
-    void Opt2(const int i, const int j);
+    void OrOpt2(const int i, const int j);
     void OrOpt3(const int i, const int j);
 
     double evaluateOrOptGeral(const int i, const int j, const int k);

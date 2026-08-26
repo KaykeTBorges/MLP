@@ -79,6 +79,55 @@ double Solution::evaluateSwap(const int i, const int j){
 
 }
 
+double Solution::evaluateOpt2(const int i, const int j){
+    Data & data = Data::getInstance();
+
+    Subsequence final;
+
+    Subsequence bloco1 = subseq_matrix[0][i-1];
+    // aqui dá certo porque a função updateALL faz o calculo do reverso
+    // ai eu tenho definido, se fosse o básico normal, eu nunca teria essa informação
+    // porque vai de i -> j
+    Subsequence bloco2 = subseq_matrix[j][i];
+    Subsequence bloco3 = subseq_matrix[j+1][data.n];
+
+    final = Subsequence::Concatenate(bloco1, bloco2);
+    final = Subsequence::Concatenate(final, bloco3);
+
+    double delta = final.C - this->cost;
+
+    return delta;
+
+}
+
+double Solution::evaluateReinsertion(const int i, const int j){
+    Data & data = Data::getInstance();
+
+    Subsequence final;
+
+    if(j == i+1){
+        Subsequence bloco1 = subseq_matrix[0][i-1];
+        Subsequence bloco2 = subseq_matrix[j][j];
+        Subsequence bloco3 = subseq_matrix[i][i];
+        Subsequence bloco4 = subseq_matrix[j+1][data.n];
+
+        final = Subsequence::Concatenate(bloco1, bloco2);   
+        final = Subsequence::Concatenate(final, bloco3);
+        final = Subsequence::Concatenate(final, bloco4);
+    }else{
+        Subsequence bloco1 = subseq_matrix[0][i-1];
+        Subsequence bloco2 = subseq_matrix[i+1][j];
+        Subsequence bloco3 = subseq_matrix[i][i];
+        Subsequence bloco4 = subseq_matrix[j+1][data.n];
+    
+        final = Subsequence::Concatenate(bloco1, bloco2);   
+        final = Subsequence::Concatenate(final, bloco3);
+        final = Subsequence::Concatenate(final, bloco4);
+    }
+    double delta = final.C - this->cost;
+
+    return delta;
+}
 
 double Solution::evaluateOrOpt2(const int i, const int j){
     Data & data = Data::getInstance();
@@ -111,56 +160,6 @@ double Solution::evaluateOrOpt2(const int i, const int j){
         double delta = final.C - this->cost;
 
         return delta;
-}
-
-double Solution::evaluateReinsertion(const int i, const int j){
-    Data & data = Data::getInstance();
-
-    Subsequence final;
-
-    if(j == i+1){
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[j][j];
-        Subsequence bloco3 = subseq_matrix[i][i];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-
-        final = Subsequence::Concatenate(bloco1, bloco2);   
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-    }else{
-        Subsequence bloco1 = subseq_matrix[0][i-1];
-        Subsequence bloco2 = subseq_matrix[i+1][j];
-        Subsequence bloco3 = subseq_matrix[i][i];
-        Subsequence bloco4 = subseq_matrix[j+1][data.n];
-    
-        final = Subsequence::Concatenate(bloco1, bloco2);   
-        final = Subsequence::Concatenate(final, bloco3);
-        final = Subsequence::Concatenate(final, bloco4);
-    }
-    double delta = final.C - this->cost;
-
-    return delta;
-}
-
-double Solution::evaluateOpt2(const int i, const int j){
-    Data & data = Data::getInstance();
-
-    Subsequence final;
-
-    Subsequence bloco1 = subseq_matrix[0][i-1];
-    // aqui dá certo porque a função updateALL faz o calculo do reverso
-    // ai eu tenho definido, se fosse o básico normal, eu nunca teria essa informação
-    // porque vai de i -> j
-    Subsequence bloco2 = subseq_matrix[j][i];
-    Subsequence bloco3 = subseq_matrix[j+1][data.n];
-
-    final = Subsequence::Concatenate(bloco1, bloco2);
-    final = Subsequence::Concatenate(final, bloco3);
-
-    double delta = final.C - this->cost;
-
-    return delta;
-
 }
 
 double Solution::evaluateOrOpt3(const int i, const int j){
@@ -220,16 +219,13 @@ void Solution::swap(const int i, const int j){
     
 }
 
-
-void Solution::OrOpt2(const int i, const int j){
+void Solution::Opt2(const int i, const int j){
     Data & data = Data::getInstance();
-    cost += evaluateOrOpt2(i, j);
+    cost += evaluateOpt2(i, j);
 
-    // o primeiro valor é onde o bloco começa (i)
-    // o segundo valor é o valor de proximo dele (i+2, porque queremos o bloco)
-    // o terceiro valor é logo após o destino final (j+1)
-    std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
-    UpdateSubseqIJ(i, j+1);
+    // fim exclusivo
+    std::reverse(route.begin() + i, route.begin() + (j + 1));
+    UpdateSubseqIJ(i, j);
 }
 
 void Solution::Reinsertion(const int i, const int j){
@@ -241,13 +237,15 @@ void Solution::Reinsertion(const int i, const int j){
 
 }
 
-void Solution::Opt2(const int i, const int j){
+void Solution::OrOpt2(const int i, const int j){
     Data & data = Data::getInstance();
-    cost += evaluateOpt2(i, j);
+    cost += evaluateOrOpt2(i, j);
 
-    // fim exclusivo
-    std::reverse(route.begin() + i, route.begin() + (j + 1));
-    UpdateSubseqIJ(i, j);
+    // o primeiro valor é onde o bloco começa (i)
+    // o segundo valor é o valor de proximo dele (i+2, porque queremos o bloco)
+    // o terceiro valor é logo após o destino final (j+1)
+    std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
+    UpdateSubseqIJ(i, j+1);
 }
 
 void Solution::OrOpt3(const int i, const int j){
