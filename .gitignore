@@ -1,0 +1,18 @@
+# Executável compilado
+tsp
+*.exe
+*.out
+*.app
+
+# Arquivos objeto e compilação
+*.o
+*.obj
+build/
+bin/
+
+# Configurações do VS Code (Opcional, mas recomendado)
+.vscode/
+
+# Arquivos do SO
+.DS_Store
+Thumbs.db

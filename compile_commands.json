@@ -1,0 +1,100 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/construcao.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/construcao.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/data.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/data.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/localSearch.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/localSearch.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/main.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/main.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/perturbation.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/perturbation.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/random.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/random.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-O3",
+      "-o",
+      "tsp",
+      "src/solution.cpp"
+    ],
+    "directory": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP",
+    "file": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/src/solution.cpp",
+    "output": "/home/ktb/Desktop/workspace/Pessoal/Processo_Seletivo_2024-MLP/tsp"
+  }
+]
