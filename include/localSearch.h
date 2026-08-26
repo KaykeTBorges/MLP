@@ -7,10 +7,11 @@
 void RVND(Solution &s);
 
 bool bestImprovementSwap(Solution &s);
-bool bestImprovmentOrOpt2(Solution &s);
-bool bestImprovmentReinsertion(Solution &s);
-bool bestImprovmentOrOpt3(Solution &s);
 bool bestImprovmentOpt2(Solution &s);
+bool bestImprovmentReinsertion(Solution &s);
+bool bestImprovmentOrOpt2(Solution &s);
+bool bestImprovmentOrOpt3(Solution &s);
+
 
 
 Solution solve();
