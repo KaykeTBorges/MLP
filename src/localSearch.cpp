@@ -127,6 +127,44 @@ bool bestImprovmentOpt2(Solution &s){
     return improved;
 }
 
+bool bestImprovmentReinsertion(Solution &s){
+    Data & data = Data::getInstance();
+    double delta, bestDelta = 0.0;
+    Subsequence bestMiolo;
+    int bestI, bestJ, i, j;
+    bool improved = false;
+
+    for (i = 1; i < data.n - 1; i++){
+        Subsequence miolo;
+        bool mioloVazio = true;
+        for(j = i + 1; j < data.n; j++){
+            delta = s.evaluateReinsertion(i, j, miolo);
+            if(delta < bestDelta){
+                bestDelta = delta;
+                bestI = i;
+                bestJ = j;
+                bestMiolo = miolo;
+                improved = true;
+            }
+            Subsequence no_j;
+            no_j.W = 1; no_j.C = 0; no_j.T = 0;
+            no_j.first = no_j.last = s.route[j];
+
+            if(mioloVazio){
+                miolo = no_j;
+                mioloVazio = false;
+            }else{
+                miolo = Subsequence::Concatenate(miolo, no_j);
+            }
+        }
+    }
+    if(improved){
+        s.Reinsertion(bestI, bestJ, bestMiolo);
+    }
+
+    return improved;
+}
+
 bool bestImprovmentOrOpt2(Solution &s){
     Data & data = Data::getInstance();
     double delta, bestDelta = 0.0;
@@ -165,44 +203,6 @@ bool bestImprovmentOrOpt2(Solution &s){
     }
     if(improved){
         s.OrOpt2(bestI, bestJ, bestMiolo);
-    }
-
-    return improved;
-}
-
-bool bestImprovmentReinsertion(Solution &s){
-    Data & data = Data::getInstance();
-    double delta, bestDelta = 0.0;
-    Subsequence bestMiolo;
-    int bestI, bestJ, i, j;
-    bool improved = false;
-
-    for (i = 1; i < data.n - 1; i++){
-        Subsequence miolo;
-        bool mioloVazio = true;
-        for(j = i + 1; j < data.n; j++){
-            delta = s.evaluateReinsertion(i, j, miolo);
-            if(delta < bestDelta){
-                bestDelta = delta;
-                bestI = i;
-                bestJ = j;
-                bestMiolo = miolo;
-                improved = true;
-            }
-            Subsequence no_j;
-            no_j.W = 1; no_j.C = 0; no_j.T = 0;
-            no_j.first = no_j.last = s.route[j];
-
-            if(mioloVazio){
-                miolo = no_j;
-                mioloVazio = false;
-            }else{
-                miolo = Subsequence::Concatenate(miolo, no_j);
-            }
-        }
-    }
-    if(improved){
-        s.Reinsertion(bestI, bestJ, bestMiolo);
     }
 
     return improved;

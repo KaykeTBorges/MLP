@@ -19,9 +19,6 @@ void Solution::copy(const Solution &other){
  cost = other.cost;
 }
 
-
-
-
 void Solution::buildTrivial(){
     Data & data = Data::getInstance();
 
@@ -89,6 +86,29 @@ double Solution::evaluateOpt2(const int i, const int j, const Subsequence& miolo
 
 }
 
+double Solution::evaluateReinsertion(const int i, const int j, const Subsequence& miolo){
+    Data & data = Data::getInstance();
+    Subsequence no_i;
+    no_i.W = 1; no_i.T = 0.0; no_i.C = 0.0;
+    no_i.first = route[i]; no_i.last = route[i];
+
+    Subsequence no_j;
+    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
+    no_j.first = route[j]; no_j.last = route[j];
+
+    Subsequence final = prefix[i-1];
+    final = Subsequence::Concatenate(final, no_j);
+
+    if(j > i+1){
+        final = Subsequence::Concatenate(final, miolo);
+    }
+    final = Subsequence::Concatenate(final, no_i);
+    final = Subsequence::Concatenate(final, sufix[j+1]);
+
+    double delta = final.C - this->cost;
+
+    return delta;
+}
 
 double Solution::evaluateOrOpt2(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
@@ -126,31 +146,6 @@ double Solution::evaluateOrOpt2(const int i, const int j, const Subsequence& mio
 
     return delta;
 }
-
-double Solution::evaluateReinsertion(const int i, const int j, const Subsequence& miolo){
-    Data & data = Data::getInstance();
-    Subsequence no_i;
-    no_i.W = 1; no_i.T = 0.0; no_i.C = 0.0;
-    no_i.first = route[i]; no_i.last = route[i];
-
-    Subsequence no_j;
-    no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
-    no_j.first = route[j]; no_j.last = route[j];
-
-    Subsequence final = prefix[i-1];
-    final = Subsequence::Concatenate(final, no_j);
-
-    if(j > i+1){
-        final = Subsequence::Concatenate(final, miolo);
-    }
-    final = Subsequence::Concatenate(final, no_i);
-    final = Subsequence::Concatenate(final, sufix[j+1]);
-
-    double delta = final.C - this->cost;
-
-    return delta;
-}
-
 
 double Solution::evaluateOrOpt3(const int i, const int j, const Subsequence& miolo){
         Data & data = Data::getInstance();
@@ -229,6 +224,14 @@ void Solution::Opt2(const int i, const int j, const Subsequence& miolo){
     UpdateLinearIJ(i, j);
 }
 
+void Solution::Reinsertion(const int i, const int j, const Subsequence& miolo){
+    Data & data = Data::getInstance();
+    cost += evaluateReinsertion(i, j, miolo);
+
+    std::rotate(route.begin() + i, route.begin() + (i+1), route.begin() + (j+1));
+    UpdateLinearIJ(i, j);
+
+}
 
 void Solution::OrOpt2(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
@@ -239,15 +242,6 @@ void Solution::OrOpt2(const int i, const int j, const Subsequence& miolo){
     // o terceiro valor é logo após o destino final (j+1)
     std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
     UpdateLinearIJ(i, j+1);
-}
-
-void Solution::Reinsertion(const int i, const int j, const Subsequence& miolo){
-    Data & data = Data::getInstance();
-    cost += evaluateReinsertion(i, j, miolo);
-
-    std::rotate(route.begin() + i, route.begin() + (i+1), route.begin() + (j+1));
-    UpdateLinearIJ(i, j);
-
 }
 
 void Solution::OrOpt3(const int i, const int j, const Subsequence& miolo){

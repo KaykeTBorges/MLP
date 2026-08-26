@@ -37,15 +37,14 @@ struct Solution
 
     double evaluateSwap(const int i, const int j, const Subsequence& miolo);
     double evaluateOpt2(const int i, const int j, const Subsequence& miolo);
-    double evaluateOrOpt2(const int i, const int j, const Subsequence& miolo);
     double evaluateReinsertion(const int i, const int j, const Subsequence& miolo);
-
+    double evaluateOrOpt2(const int i, const int j, const Subsequence& miolo);
     double evaluateOrOpt3(const int i, const int j, const Subsequence& miolo);
 
     void swap(const int i, const int j, const Subsequence& miolo);
     void Opt2(const int i, const int j, const Subsequence& miolo);
-    void OrOpt2(const int i, const int j, const Subsequence& miolo);
     void Reinsertion(const int i, const int j, const Subsequence& miolo);
+    void OrOpt2(const int i, const int j, const Subsequence& miolo);
     void OrOpt3(const int i, const int j, const Subsequence& miolo);
 
     double evaluateOrOptGeral(const int i, const int j, const int k);
