@@ -1,6 +1,7 @@
 #include "localSearch.h"
 #include "perturbation.h"
 #include "construcao.h"
+#include "random.h"
 
 void RVND(Solution &s){
 
@@ -8,7 +9,7 @@ void RVND(Solution &s){
     bool improved = false;
 
     while(NL.empty() == false){
-        int n = (rand() % NL.size());
+        int n = Random::getInt(0, static_cast<int>(NL.size()) - 1);
 
         switch(NL[n]){
             case 1:

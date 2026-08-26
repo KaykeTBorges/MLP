@@ -1,5 +1,6 @@
 #include "data.h"
 #include "localSearch.h"
+#include "random.h"
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -13,7 +14,7 @@ int main(int argc, char** argv) {
 
     unsigned int seed = (argc >= 3) ? std::atoi(argv[2]) : static_cast<unsigned int>(time(NULL));
     std::cout << "Seed: " << seed << std::endl;
-    srand(seed);
+    Random::randomize(seed);
 
     Data& data = Data::getInstance();
     data.read(argc, argv);

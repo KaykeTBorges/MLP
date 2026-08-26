@@ -59,14 +59,14 @@ Solution Construcao(){
         ordenarEmOrdemCrescente(custoInsercao);
 
         // Sorteia o alpha seguindo a base da literatura (R = {0.00, 0.01, ..., 0.25})
-        double alpha = (rand() % 26) / 100.0;
+        double alpha = Random::getInt(0, 25) / 100.0;
 
         // ceil(alpha * tamanho)
         // O std::max entra aqui para impedir que o limite seja 0.
         int limite = std::max(1, (int)ceil(alpha * custoInsercao.size()));
 
         // Sorteia o candidato dentro do limite
-        int selecionado = rand() % limite;
+        int selecionado = Random::getInt(0, limite - 1);
 
         inserirNaSolucao(s, custoInsercao[selecionado]);
         
