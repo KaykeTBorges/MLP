@@ -249,7 +249,7 @@ void Solution::pertubationDoubleBridgeTamanho(){
     novaRoute.insert(novaRoute.end(), route.begin() + l+1, route.end());
 
     route = std::move(novaRoute);
-    UpdateLinear();
+    UpdateLinearIJ(i, l);
     cost = prefix[data.n].C;
 }
 

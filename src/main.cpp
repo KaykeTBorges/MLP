@@ -1,6 +1,7 @@
 #include "data.h"
 #include "localSearch.h"
 #include "random.h"
+#include "solution.h"
 #include <cstdlib>
 #include <ctime>
 #include <iostream>

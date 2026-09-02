@@ -16,16 +16,16 @@ void RVND(Solution &s){
                 improved = bestImprovementSwap(s);
                 break;
             case 2:
-                improved = bestImprovmentOrOpt2(s);
+                improved = bestImprovmentOpt2(s);
                 break;
             case 3:
                 improved = bestImprovmentReinsertion(s);
                 break;
             case 4:
-                improved = bestImprovmentOrOpt3(s);
+                improved = bestImprovmentOrOpt2(s);
                 break;
             case 5:
-                improved = bestImprovmentOpt2(s);
+                improved = bestImprovmentOrOpt3(s);
                 break;
             default:
                 break;

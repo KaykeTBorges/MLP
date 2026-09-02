@@ -97,11 +97,10 @@ double Solution::evaluateReinsertion(const int i, const int j, const Subsequence
     no_j.first = route[j]; no_j.last = route[j];
 
     Subsequence final = prefix[i-1];
-    final = Subsequence::Concatenate(final, no_j);
-
     if(j > i+1){
         final = Subsequence::Concatenate(final, miolo);
     }
+    final = Subsequence::Concatenate(final, no_j);
     final = Subsequence::Concatenate(final, no_i);
     final = Subsequence::Concatenate(final, sufix[j+1]);
 
@@ -132,13 +131,12 @@ double Solution::evaluateOrOpt2(const int i, const int j, const Subsequence& mio
     no_j.first = route[j]; no_j.last = route[j];
 
     Subsequence final = prefix[i-1];
-    final = Subsequence::Concatenate(final, no_j);
-
     // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
     if(j > i+2){
         final = Subsequence::Concatenate(final, miolo);
 
     }
+    final = Subsequence::Concatenate(final, no_j);
     final = Subsequence::Concatenate(final, no_i);
     final = Subsequence::Concatenate(final, sufix[j+1]);
 
@@ -176,13 +174,12 @@ double Solution::evaluateOrOpt3(const int i, const int j, const Subsequence& mio
     no_j.first = route[j]; no_j.last = route[j];
 
     Subsequence final = prefix[i-1];
-    final = Subsequence::Concatenate(final, no_j);
-
     // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
     if(j > i+3){
         final = Subsequence::Concatenate(final, miolo);
 
     }
+    final = Subsequence::Concatenate(final, no_j);
     final = Subsequence::Concatenate(final, no_i);
     final = Subsequence::Concatenate(final, sufix[j+1]);
 
