@@ -16,10 +16,7 @@ struct Solution
     std::vector<int> route;
     double cost;
     std::vector<std::vector<Subsequence>> subseq_matrix;
-
-    double* prefix;
-    double* sufix;
-
+    
     
     Solution(std::vector<int> route, double cost): route(route), cost(cost), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)) {}
     Solution() :  route(std::vector<int>(Data::getInstance().n + 1)), cost(0), subseq_matrix(Data::getInstance().n + 1, std::vector<Subsequence>(Data::getInstance().n + 1)) {}

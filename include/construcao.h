@@ -19,12 +19,7 @@ typedef struct InsertionInfo {
 }InsertionInfo;
 
 Solution Construcao();
-vector<InsertionInfo> calcularCustoInsercao(Solution& s, vector<int>& CL);
-void escolherNosAleatorios(Solution& s, int tam);
-vector<int> nosRestantes(const vector<int>& sequencia);
-void ordenarEmOrdemCrescente(vector<InsertionInfo>& custoInsercao);
-void inserirNaSolucao(Solution& s, InsertionInfo selecionado);
 
-bool compararPorCusto(const InsertionInfo& a, const InsertionInfo& b);
+bool compararPorNos(int r, const int& a, const int& b);
 
 #endif
