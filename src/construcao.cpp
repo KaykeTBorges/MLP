@@ -10,7 +10,7 @@ Solution Construcao(){
     std::vector<int> CL(data.n - 1);
     std::iota(CL.begin(), CL.end(), 2);
 
-    double alpha = Random::getInt(0, 25) / 100.0;
+    double alpha = Random::getInt(0, 25) / 100;
 
     int r = 1;
 
