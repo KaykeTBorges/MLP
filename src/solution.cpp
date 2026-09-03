@@ -263,21 +263,28 @@ Solution Solution::ILS(int maxIter, int maxIterIls){
         while(iterIls <= maxIterIls){
             RVND(s);
             if(s.cost < best.cost){
-                best = s;
+                best.copy(s);
+                best.UpdateLinear();
                 iterIls = 0;
+
+                 if (s.cost < bestOfAll.cost){
+                    bestOfAll.copy(s);
+                    bestOfAll.UpdateLinear();
+                    
+                 }   
             }else{
                 // aqui é porque o double bridge estava sendo aplicado na solução que tinha piorado
                 // e não na solução melhor, que a best, então se o custo der maior, precisamos voltar ao melhor
                 // e ai sim aplicar a perturbação
-                s = best;
+                s.copy(best);
+                s.UpdateLinear();
             }
+
             s.pertubationDoubleBridgeTamanho();
             iterIls++;
         }
         
-        if(best.cost < bestOfAll.cost){
-            bestOfAll = best;
-        }
+
     }
 
     return bestOfAll;
