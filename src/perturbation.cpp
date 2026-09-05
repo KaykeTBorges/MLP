@@ -241,7 +241,7 @@ void Solution::pertubationDoubleBridgeTamanho(){
     int l = k + tamanho_2;
 
     std::vector<int> novaRoute;
-    novaRoute.reserve(data.n);
+    novaRoute.reserve(data.n+1);
     novaRoute.insert(novaRoute.end(), route.begin(), route.begin() + i);
     novaRoute.insert(novaRoute.end(), route.begin() + k, route.begin() + l+1);
     novaRoute.insert(novaRoute.end(), route.begin() + j+1, route.begin() + k);

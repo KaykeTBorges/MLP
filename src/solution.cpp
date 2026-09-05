@@ -96,13 +96,28 @@ double Solution::evaluateReinsertion(const int i, const int j, const Subsequence
     no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
     no_j.first = route[j]; no_j.last = route[j];
 
-    Subsequence final = prefix[i-1];
-    if(j > i+1){
-        final = Subsequence::Concatenate(final, miolo);
+    Subsequence final;
+
+    if(j > i){
+        final = prefix[i-1];
+        if(j > i+1){
+            final = Subsequence::Concatenate(final, miolo);
+        }
+        final = Subsequence::Concatenate(final, no_j);
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, sufix[j+1]);
+    }else{
+        final = prefix[j-1];
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, no_j);
+        // aqui a lógica muda, porque o j vem antes
+        // o miolo corresponde a partir j+1 até o i-1, só que o i-1 não entra na conversa
+        // e o fim é inclusivo lá no loop de bestImprovement
+        if(j+1 < i){
+            final = Subsequence::Concatenate(final, miolo);
+        }
+        final = Subsequence::Concatenate(final, sufix[i+1]);
     }
-    final = Subsequence::Concatenate(final, no_j);
-    final = Subsequence::Concatenate(final, no_i);
-    final = Subsequence::Concatenate(final, sufix[j+1]);
 
     double delta = final.C - this->cost;
 
@@ -130,15 +145,30 @@ double Solution::evaluateOrOpt2(const int i, const int j, const Subsequence& mio
     no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
     no_j.first = route[j]; no_j.last = route[j];
 
-    Subsequence final = prefix[i-1];
-    // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
-    if(j > i+2){
-        final = Subsequence::Concatenate(final, miolo);
+    Subsequence final;
 
+    if(j > i){
+        final = prefix[i-1];
+        // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
+        if(j > i+2){
+            final = Subsequence::Concatenate(final, miolo);
+        }
+        final = Subsequence::Concatenate(final, no_j);
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, sufix[j+1]);
+    }else{
+        final = prefix[j-1];
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, no_j);
+        // aqui a lógica muda, porque o j vem antes
+        // o miolo corresponde a partir j+1 até o i-1, só que o i-1 não entra na conversa
+        // e o fim é inclusivo lá no loop de bestImprovement
+        if(j+1 < i){
+            final = Subsequence::Concatenate(final, miolo);
+        }
+        final = Subsequence::Concatenate(final, sufix[i+2]);
     }
-    final = Subsequence::Concatenate(final, no_j);
-    final = Subsequence::Concatenate(final, no_i);
-    final = Subsequence::Concatenate(final, sufix[j+1]);
+    
 
     double delta = final.C - this->cost;
 
@@ -173,15 +203,31 @@ double Solution::evaluateOrOpt3(const int i, const int j, const Subsequence& mio
     no_j.W = 1; no_j.T = 0.0; no_j.C = 0.0;
     no_j.first = route[j]; no_j.last = route[j];
 
-    Subsequence final = prefix[i-1];
-    // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
-    if(j > i+3){
-        final = Subsequence::Concatenate(final, miolo);
+    Subsequence final;
 
+    if(j > i){
+        final = prefix[i-1];
+        // nesse código precisa ser garantido que o n é maior que 3, porque se não, pode dar segmentention fault
+        if(j > i+3){
+            final = Subsequence::Concatenate(final, miolo);
+
+        }
+        final = Subsequence::Concatenate(final, no_j);
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, sufix[j+1]);
+    }else{
+        final = prefix[j-1];
+        final = Subsequence::Concatenate(final, no_i);
+        final = Subsequence::Concatenate(final, no_j);
+        // aqui a lógica muda, porque o j vem antes
+        // o miolo corresponde a partir j+1 até o i-1, só que o i-1 não entra na conversa
+        // e o fim é inclusivo lá no loop de bestImprovement
+        if(j+1 < i){
+            final = Subsequence::Concatenate(final, miolo);
+        }
+        final = Subsequence::Concatenate(final, sufix[i+3]);
     }
-    final = Subsequence::Concatenate(final, no_j);
-    final = Subsequence::Concatenate(final, no_i);
-    final = Subsequence::Concatenate(final, sufix[j+1]);
+   
 
     double delta = final.C - this->cost;
 
@@ -221,13 +267,47 @@ void Solution::Opt2(const int i, const int j, const Subsequence& miolo){
     UpdateLinearIJ(i, j);
 }
 
+/*
+ * como o std::rotate funciona
+ * 
+ *  principio std::rotate(first, middle, last)
+ * 
+ * Regra geral do C++ divide o intervalo [first, last) (não inclusivo, no ultimo) em dois blocos:
+ *   - Bloco 1: de 'first' ate 'middle-1'
+ *   - Bloco 2: de 'middle' ate 'last-1'
+ * O rotate simplesmente inverte a ordem dos blocos
+ * O que era [Bloco 1, Bloco 2] passa a ser [Bloco 2, Bloco 1].
+ * 
+ * CASO 1: Mover os nos em 'i' para depois do 'j'
+ * - first = inicio do no movido (i)
+ * - middle = fim do no movido (ex i+1 para Reinsertion, i+2 para OrOpt2)
+ * - last = fim do destino (j+1)
+ * 
+ *   Bloco 1 = os nos que queremos mover
+ *   Bloco 2 = O "miolo" (nos que estao no meio do caminho)
+ * Apos o rotate: O miolo vem para a esquerda, e o no movido cai no lugar certo a direita, na posicao j
+ * 
+ * CASO 2: Mover os nos em 'i' para a posicao 'j' (j sendo menor, vindo antes que i)
+ * - first = posicao alvo de destino (j)
+ * - middle = inicio do no que queremos mover (i)
+ * - last = fim do no que queremos mover (ex i+1 para Reinsertion)
+ * 
+ *   Bloco 1 = O "miolo" (nos que agora estao antes do 'i')
+ *   Bloco 2 = os nos que queremos mover
+ * Apos o rotate: O no movido vem para a esquerda (para a posicao j), e o miolo vai para a direita
+ */
+
+
 void Solution::Reinsertion(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
     cost += evaluateReinsertion(i, j, miolo);
 
-    std::rotate(route.begin() + i, route.begin() + (i+1), route.begin() + (j+1));
+    if(i <= j){
+        std::rotate(route.begin() + i, route.begin() + (i+1), route.begin() + (j+1));
+    }else{
+        std::rotate(route.begin() + j, route.begin() + i, route.begin() + (i+1));
+    }
     UpdateLinearIJ(i, j);
-
 }
 
 void Solution::OrOpt2(const int i, const int j, const Subsequence& miolo){
@@ -237,17 +317,26 @@ void Solution::OrOpt2(const int i, const int j, const Subsequence& miolo){
     // o primeiro valor é onde o bloco começa (i)
     // o segundo valor é o valor de proximo dele (i+2, porque queremos o bloco)
     // o terceiro valor é logo após o destino final (j+1)
-    std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
-    UpdateLinearIJ(i, j+1);
+    if(i <= j){
+        std::rotate(route.begin() + i, route.begin() + (i+2), route.begin() + (j+1));
+        UpdateLinearIJ(i, j+1);
+    }else{
+        std::rotate(route.begin() + j, route.begin() + i, route.begin() + (i+2));
+        UpdateLinearIJ(i+1, j);
+    }
 }
 
 void Solution::OrOpt3(const int i, const int j, const Subsequence& miolo){
     Data & data = Data::getInstance();
     cost += evaluateOrOpt3(i, j, miolo);
 
-    std::rotate(route.begin() + i, route.begin() + (i+3), route.begin() + (j+1));
-    UpdateLinearIJ(i, j+2);
-
+    if(i <= j){
+        std::rotate(route.begin() + i, route.begin() + (i+3), route.begin() + (j+1));
+        UpdateLinearIJ(i, j+2);
+    }else{
+        std::rotate(route.begin() + j, route.begin() + i, route.begin() + (i+3));
+        UpdateLinearIJ(i+2, j);
+    }
 }
 
 Solution Solution::ILS(int maxIter, int maxIterIls){

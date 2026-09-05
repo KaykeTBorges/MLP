@@ -194,6 +194,7 @@ void Solution::UpdateLinearIJ(const int i, const int j){
         seq[a].last = route[a];
     }
 
+    // isso é para não mexer nos valores das pontos, tanto o indice 0 quanto o indice data.n
     int min_idx = std::min(i, j);
     min_idx = std::max(1, min_idx);
 

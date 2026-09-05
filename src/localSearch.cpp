@@ -134,6 +134,14 @@ bool bestImprovmentReinsertion(Solution &s){
     int bestI, bestJ, i, j;
     bool improved = false;
 
+    // A ideia inicial era usar a mesma chamada de evaluateReinsertion nos dois sentidos
+    // apenas trocando a ordem de i e j na função isso nao seria equivalente
+        // i identifica o no ou bloco retirado, enquanto j indica
+        // a posicao de destino. Ao inverter os argumentos, a funcao passa a retirar
+        // outro no ou bloco; em movimentos como Or-Opt3, isso tambem pode levar a
+    // porque o for não tem um limite no lado do j e se fosse colocado, talvez eu retirasse as pontas da análise
+    // além disso, o miolo precisa ser construido em ordem diferente para cada sentido
+    // por isso, mantive dois for e preservei as duas criações
     for (i = 1; i < data.n - 1; i++){
         Subsequence miolo;
         bool mioloVazio = true;
@@ -155,6 +163,27 @@ bool bestImprovmentReinsertion(Solution &s){
                 mioloVazio = false;
             }else{
                 miolo = Subsequence::Concatenate(miolo, no_j);
+            }
+        }
+        mioloVazio = true;
+        for(j = i - 1; j >= 1; j--){
+            delta = s.evaluateReinsertion(i, j, miolo);
+            if(delta < bestDelta){
+                bestDelta = delta;
+                bestI = i;
+                bestJ = j;
+                bestMiolo = miolo;
+                improved = true;
+            }
+            Subsequence no_j;
+            no_j.W = 1; no_j.C = 0; no_j.T = 0;
+            no_j.first = no_j.last = s.route[j];
+
+            if(mioloVazio){
+                miolo = no_j;
+                mioloVazio = false;
+            }else{
+                miolo = Subsequence::Concatenate(no_j, miolo);
             }
         }
     }
@@ -200,6 +229,28 @@ bool bestImprovmentOrOpt2(Solution &s){
                 miolo = Subsequence::Concatenate(miolo, no_j);
             }
         }
+
+        mioloVazio = true;
+        for(j = i - 1; j >= 1; j--){
+            delta = s.evaluateOrOpt2(i, j, miolo);
+            if(delta < bestDelta){
+                bestDelta = delta;
+                bestI = i;
+                bestJ = j;
+                bestMiolo = miolo;
+                improved = true;
+            }
+            Subsequence no_j;
+            no_j.W = 1; no_j.C = 0; no_j.T = 0;
+            no_j.first = no_j.last = s.route[j];
+
+            if(mioloVazio){
+                miolo = no_j;
+                mioloVazio = false;
+            }else{
+                miolo = Subsequence::Concatenate(no_j, miolo);
+            }
+        }
     }
     if(improved){
         s.OrOpt2(bestI, bestJ, bestMiolo);
@@ -239,6 +290,28 @@ bool bestImprovmentOrOpt3(Solution &s){
                 mioloVazio = false;
             }else{
                 miolo = Subsequence::Concatenate(miolo, no_j);
+            }
+        }
+
+        mioloVazio = true;
+        for(j = i - 1; j >= 1; j--){
+            delta = s.evaluateOrOpt3(i, j, miolo);
+            if(delta < bestDelta){
+                bestDelta = delta;
+                bestI = i;
+                bestJ = j;
+                bestMiolo = miolo;
+                improved = true;
+            }
+            Subsequence no_j;
+            no_j.W = 1; no_j.C = 0; no_j.T = 0;
+            no_j.first = no_j.last = s.route[j];
+
+            if(mioloVazio){
+                miolo = no_j;
+                mioloVazio = false;
+            }else{
+                miolo = Subsequence::Concatenate(no_j, miolo);
             }
         }
     }
